@@ -1,0 +1,9 @@
+2023-11-05 09:20:27,689 : INFO : app : Testing the logger...
+2023-11-05 09:23:29,823 : INFO : app : Testing the logger...
+2023-11-05 09:23:52,150 : INFO : app : UNARM: Missile unarmed successfully
+2023-11-05 09:25:21,882 : INFO : app : Testing the logger...
+2023-11-05 09:25:34,497 : INFO : app : ARM | Missile armed successfully
+2023-11-05 09:25:39,383 : INFO : app : FIRE | Missile fired successfully
+2023-11-05 09:25:44,606 : INFO : app : RELOAD | Please wait sometime before reloading
+2023-11-05 09:25:46,709 : INFO : app : RELOAD | Please wait sometime before reloading
+2023-11-05 09:26:02,785 : INFO : app : RELOAD | Missile Reloaded successfully

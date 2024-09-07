@@ -1,0 +1,3 @@
+World.PrimaryBattleship.x
+World.PrimaryBattleship.y
+World.PrimaryBattleship.heading

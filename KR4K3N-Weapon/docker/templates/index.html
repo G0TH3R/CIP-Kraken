@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Anti-Aircraft Missile</title>
+        <style>
+            canvas {
+                border: 1px solid black;
+            }
+        </style>
+    </head>
+
+    <body>
+        <canvas id="canvas" width="600" height="400"></canvas>
+        <script>
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            function drawStatusBox(status)
+            {
+            // Draw the outline rectangle
+            ctx.beginPath();
+            ctx.rect(20, 10, 120, 40); // (x, y, width, height)
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.closePath();
+
+            // Draw text inside the rectangle
+            ctx.font = '18px Arial';
+            ctx.fillStyle = 'green';
+            ctx.fillText(status, 33, 35);
+            }  
+            
+            function drawInRangeBox(status)
+            {
+                // Draw the outline rectangle
+                ctx.beginPath();
+                ctx.rect(140, 10, 200, 40); // (x, y, width, height)
+                ctx.strokeStyle = 'black';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.closePath();
+
+                // Draw text inside the rectangle
+                ctx.font = '18px Arial';
+                ctx.fillStyle = 'green';
+                ctx.fillText('Missile Status: ' + status, 153, 35);
+            }  
+
+            function drawMissingRoundsBox(rounds)
+            {
+            // Draw the outline rectangle
+            ctx.beginPath();
+            ctx.rect(340, 10, 50, 40); // (x, y, width, height)
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.closePath();
+
+            // Draw text inside the rectangle
+            ctx.font = '18px Arial';
+            ctx.fillStyle = 'green';
+            ctx.fillText(rounds, 353, 35);
+            }     
+
+            function drawMissile(x, y,color) {
+                ctx.beginPath();
+
+                // Missile body
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + 8, y - 20);
+                ctx.lineTo(x + 8, y - 40);
+                ctx.lineTo(x + 2, y - 50);
+                ctx.lineTo(x - 2, y - 50);
+                ctx.lineTo(x - 8, y - 40);
+                ctx.lineTo(x - 8, y - 20);
+                ctx.closePath();
+
+                // Missile tail fins
+                ctx.moveTo(x - 5, y - 20);
+                ctx.lineTo(x - 15, y - 20);
+                ctx.lineTo(x - 10, y - 30);
+                ctx.closePath();
+
+                ctx.moveTo(x + 5, y - 20);
+                ctx.lineTo(x + 15, y - 20);
+                ctx.lineTo(x + 10, y - 30);
+                ctx.closePath();
+
+                // Missile warhead
+                ctx.arc(x, y - 60, 10, 0, Math.PI * 2);
+
+                if(color)
+                {
+                    ctx.fillStyle = color;
+                }else
+                {
+                    ctx.fillStyle = '#00FF00';
+                }
+
+                
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 2;
+
+                ctx.fill();
+                ctx.stroke();
+            }
+
+
+
+            function clearCanvas() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+
+            function updateMissilePosition(x, y, color) {
+                clearCanvas();
+                drawMissile(x, y, color);
+            }
+
+            // Initial position of the missile
+            let missileX = canvas.width / 2;
+            let missileY = canvas.height - 50;
+            let missileColor = '{{ missile_color }}'; // Color set by Flask (either '#FF0000' or '#00FF00')
+
+            drawMissile(missileX, missileY);
+
+            // Example: Move the missile left when the left arrow key is pressed
+            window.addEventListener('keydown', function(event) {
+                switch (event.key) {
+                    case 'ArrowLeft':
+                        missileX -= 10;
+                        updateMissilePosition(missileX, missileY,missileColor);
+                        break;
+                    case 'ArrowRight':
+                        missileX += 10;
+                        updateMissilePosition(missileX, missileY,missileColor);
+                        break;
+                    case 'ArrowUp':
+                        missileY -= 10;
+                        updateMissilePosition(missileX, missileY,missileColor);
+                        break;
+                    case 'ArrowDown':
+                        missileY += 10;
+                        updateMissilePosition(missileX, missileY,missileColor);
+                        break;
+                    // Add more cases for other arrow keys or controls as needed
+                }
+            });
+
+            // Function to arm the missile (change color to red)
+            function armMissile() {
+                missileColor = '#FF0000'; // Red color
+                updateMissilePosition(missileX, missileY, missileColor);
+            }
+
+            // Function to unarm the missile (change color to green)
+            function unarmMissile() {
+                missileColor = '#00FF00'; // Green color
+                updateMissilePosition(missileX, missileY, missileColor);
+            }
+
+            // Function to update missile color based on API response
+            function updateMissileColor() {
+                fetch('/get_missile_color')
+                    .then(response => response.json())
+                    .then(data => {
+                        missileColor = data.color;
+                        missileStatus = data.status;
+                        rounds = data.rounds;
+                        range_status = data.range_status;
+                        updateMissilePosition(missileX, missileY, missileColor);
+                        drawStatusBox(missileStatus);
+                        drawMissingRoundsBox(rounds)
+                        drawInRangeBox(range_status)
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+
+            // Call the updateMissileColor function every .5 second (500 milliseconds)
+            setInterval(updateMissileColor, 1500);
+            
+        </script>
+    </body>
+</html>

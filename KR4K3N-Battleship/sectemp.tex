@@ -1,0 +1,213 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{array}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{tabularray}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+\title{Assuring Safe Navigation and Operation for Autonomous Ships: An Explainable AI Approach}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Author }
+\IEEEauthorblockA{\textit{} \\
+\textit{}\\
+ \\
+}
+\and
+\IEEEauthorblockN{2\textsuperscript{st} Author }
+\IEEEauthorblockA{\textit{} \\
+\textit{}\\
+ \\
+}
+\and
+\IEEEauthorblockN{3\textsuperscript{st} Author }
+\IEEEauthorblockA{\textit{} \\
+\textit{}\\
+ \\
+}
+\and
+\IEEEauthorblockN{4\textsuperscript{st} Author }
+\IEEEauthorblockA{\textit{} \\
+\textit{}\\
+ \\
+}
+\and
+\IEEEauthorblockN{5\textsuperscript{st} Author }
+\IEEEauthorblockA{\textit{} \\
+\textit{}\\
+ \\
+}
+\and
+\IEEEauthorblockN{6\textsuperscript{st} Author }
+\IEEEauthorblockA{\textit{} \\
+\textit{}\\
+}}
+
+
+\section{Security Machine Learning Model}
+The Security ML Module uses real-time data from components to monitor their behaviors and functionality. The Security Monitor was inspired by using Explainable AI to filter anomalous system component behavior and take action against it by classifying those behaviors by quantifying their system impact and defining their reasoning using these metrics. This approach aims to be preventive, explainable \cite{b5}, robust in spotting new threats and anomalies, and less dependent on humans.
+
+An attack on the power system can disrupt the Battleship Infrastructure; hence, the ICS Module is crucial to security. The module supplies monitor 'Power (in Watts).'
+Weapon Simulator displays 'Timestamp,' 'Level,' 'Weapon Range Status,' 'Weapons Status', and 'Status Msg.' The weapon system must be monitored because downtime or compromise can compromise the battleship's navigational capabilities and allow other system components to be exploited or hinder ally battleships. Weapon system states are described in Table \ref{tab:sec_status}.
+
+\begin{table}[htbp]
+\centering
+\caption{System States and Weapon Status}
+\label{tab:sec_status}
+\begin{tabular}{clll}
+\toprule
+\textbf{STATES} & \textbf{Weapons Range Status} & \textbf{Weapons Status} & \textbf{Status} \\
+\midrule
+0 & Off range & Arm & Fail \\
+1 & In range & Unarm & Success \\
+2 & X & Fire & Error \\
+3 & X & Reload & X \\
+4 & X & Waiting & X \\
+\bottomrule
+\multicolumn{4}{l}{\footnotesize Security ML considered the weapons status to make a prediction.}
+\end{tabular}
+\end{table}
+
+
+\subsection{Preprocessing and Labeling}
+Refining machine learning algorithms in cybersecurity is critical for detecting and neutralizing threats within weapon and ICS. The data preprocessing protocol outlined serves to amalgamate data inputs from ICS and Weapon Systems, enhancing the efficacy of a \texttt{DecisionTreeClassifier} model. Initially, the Weapon Systems data undergoes one-hot encoding, converting the 'Status Msg' categorical values into a binary matrix essential for model training. Simultaneously, a 'flag' column is introduced, classifying the system's status as operational (1), compromised (3), or non-operational (2), based on the 'Status' indicator and the system's integrity state.
+The processed datasets from compromised and secure versions of the Weapon Systems are then merged into a single data frame. The preprocessing standardizes the dataset by addressing irregularities such as null values and datatype inconsistencies and sets the stage for a robust training process of the security machine learning model, a cornerstone in safeguarding critical defense infrastructures.
+
+\subsection{Model}
+The suggested cybersecurity architecture employs the \texttt{DecisionTreeClassifier} model for training, as it can distinguish between three system functionality states. All systems operate optimally in State "1", or "Go". State "2" and "Down" imply the weapon system is non-operational, but the ICS module works. State "3" indicates a compromise that may affect the ICS module, weapon system, or both.
+Multiple reasons justify the decision tree algorithm. The model's decision tree graph shows that the algorithm is very explainable. Transparency is essential for understanding the model's decision-making process in a trustworthy domain. Decision trees excel at modeling non-linear relationships. Therefore, they can handle cybersecurity datasets' complex feature interdependencies.
+Outlier tolerance is another key benefit of decision trees. Because outliers are segregated into leaf nodes, they do not affect the model's accuracy. Finally, decision trees can be trained quickly enough for the context. This use case has a small dataset, so a model that can be trained quickly and efficiently is essential for cybersecurity.
+
+
+\section{Results and Discussion}
+
+\subsection{Security ML}
+
+Precision is defined as the ratio of true positives (TP) to the sum of true positives and false positives (FP), represented by the formula:
+\[
+\text{Precision} = \frac{TP}{TP + FP}
+\]
+
+Recall, also known as sensitivity, measures the proportion of actual positives that were identified correctly, calculated as the ratio of true positives to the sum of true positives and false negatives (FN):
+\[
+\text{Recall} = \frac{TP}{TP + FN}
+\]
+
+The F1 score is the harmonic mean of precision and recall, a metric that balances the two by penalizing extreme values:
+\[
+\text{F1 Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}
+\]
+
+Accuracy represents the overall correctness of the model and is the ratio of correctly predicted observations to the total observations:
+\[
+\text{Accuracy} = \frac{\text{Number of correct predictions}}{\text{Total number of predictions}}
+\]
+
+
+\begin{table}[ht]
+\centering
+\caption{Performance Metrics of Machine Learning Models}
+\label{tab:sec_performance}
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+S. No. & Model         & Precision      & Recall         & F1 Score       & Accuracy \\ \midrule
+1      & Decision Tree & 1              & 1              & 1              & 0.998 \\
+       &               & 0.978          & 0.977          & 0.978          & \\
+       &               & 0.999          & 0.999          & 0.999          & \\
+2      & Random Forest & 0.999          & 1              & 0.999          & 0.997 \\
+       &               & 0.964          & 0.963          & 0.963          & \\
+       &               & 0.998          & 0.998          & 0.998          & \\
+2      & KNN           & 0.451          & 0.508          & 0.478          & 0.735 \\
+       &               & 0.086          & 0.028          & 0.042          & \\
+       &               & 0.839          & 0.839          & 0.839          & \\
+\bottomrule
+\multicolumn{6}{l}{\footnotesize Note: Decision Tree Model Outperforms the Random Forest nominally.}
+\end{tabular}
+\end{table}
+
+\subsection{Cyber Attack Simulated Scenarios}
+Table \ref{tab:battleship_scenario} demonstrates randomly selected scenarios to test the Navigation ML model against the battleship's native navigation capabilities and without a collision avoidance algorithm. Each scenario consists of three waypoints and up to 15 obstacles ranging from 10 to 500 meters. In every scenario, the battleship encountered an obstacle on the path between waypoints and had to determine the best way to navigate around it. With no collision avoidance capabilities, the battleship successfully navigated the course in \(\frac{0}{10}\) scenarios. The battleship successfully navigated \(\frac{2}{10}\) scenarios with the basic collision avoidance algorithm. With the Navigation ML model, the battleship successfully navigated the course in \(\frac{X}{10}\) scenarios.
+
+
+
+Table \ref{tab:sec_expeval}.
+
+% \usepackage{tabularray}
+\begin{table}[htbp]
+\centering
+\caption{Experiment Result of Compromised Weapon System}
+\label{tab:sec_expeval}
+\begin{tblr}{
+  cells = {c},
+  hline{1,9} = {-}{0.08em},
+  hline{3} = {-}{},
+}
+S. No. & Case of                  & Successful  & Failed      & Total \\
+       & Compromise               & Predictions & Predictions & Cases \\
+1      & No More Rounds Remaining & 500         & 0           & 500   \\
+2      & Out of Range             & 392         & 0           & 392   \\
+3      & Missile Missed           & 134         & 0           & 134   \\
+4      & Missile is not Loaded    & 214         & 38          & 252   \\
+5      & Please wait sometime     & 215         & 0           & 215   \\
+       & before reloading         &             &             &       
+\end{tblr}
+\end{table}
+
+
+
+
+Table \ref{tab:sec_feature}
+
+\begin{table}[htbp]
+\centering
+\caption{Features for SNML}
+\label{tab:sec_feature}
+\begin{tabular}{clll}
+\toprule
+\textbf{S. No.} & \textbf{Feature Name} & \textbf{Description}\\
+\midrule
+1	 & Power Required (Watts)	& Feature indicating the \\
+    &                           & battleship's power \\
+2 	& Weapon Range Status 	      & in range = 1 \\
+   	& 	 		  	& off range = 0 \\
+3 	& Weapons Status 		& arm = 0 \\
+& 	 		     	& unarm = 1 \\
+& 	 		     	& fire = 2 \\
+& 	 		     	& reload = 3 \\
+& 	 		     	& waiting = 4 \\
+4 	& Msg 				& Encoded Message Generated \\
+    &                   &  by Weapon System (e.g., \\
+    &                   & “Missile is not Loaded”)\\
+\bottomrule
+
+
+\end{tabular}
+\end{table}
+
+
+% \usepackage{tabularray}
+\begin{table}
+\centering
+\begin{tblr}{
+}
+\textbf{S. No.} & \textbf{CASE OF COMPROMISE}             & \textbf{SUCCESSFUL PREDICTIONS} & \textbf{UNSUCCESSFUL PREDICTIONS} & \textbf{TOTAL CASES} \\
+\textbf{1}      & “No More Rounds Remaining”              & 500                             & 0                                 & 500                  \\
+\textbf{2}      & “Out of Range”                          & 392                             & 0                                 & 392                  \\
+\textbf{3}      & “Missile Missed”                        & 134                             & 0                                 & 134                  \\
+\textbf{4}      & “Missile is not Loaded”                 & 214                             & 38                                & 252                  \\
+\textbf{5}      & “Please wait sometime before reloading” & 215                             & 0                                 & 215                  
+\end{tblr}
+\end{table}
+
+
+\end{document}

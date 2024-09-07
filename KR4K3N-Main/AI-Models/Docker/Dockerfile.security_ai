@@ -1,0 +1,24 @@
+# Use an official Python runtime as a parent image
+FROM python:3.11-slim
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+RUN apt-get update && apt-get install -y libzmq3-dev nano net-tools && rm -rf /var/lib/apt/lists/*
+
+# Copy the current directory contents into the container at /usr/src/app
+COPY client_security-ai.py .
+COPY keys_to_extract.txt .
+
+# Install any needed packages specified in requirements.txt
+# Upgrade pip and install Python dependencies
+RUN pip install --upgrade pip && pip install --no-cache-dir flask zmq termcolor
+
+# Make port 5000 available to the world outside this container
+EXPOSE 6010
+
+# Define environment variable
+ENV zmq-server=localhost
+
+# Run app.py when the container launches
+CMD ["python", "./client_security-ai.py"]
