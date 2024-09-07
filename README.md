@@ -1,4 +1,4 @@
-# Autonomous Systems Navigation and Control Project
+# Autonomous Systems Navigation and Control Project [https://ieeexplore.ieee.org/document/10427933]
 
 ## Overview
 
